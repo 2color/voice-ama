@@ -24,7 +24,6 @@
     "@tanstack/react-query-devtools": "^5.85.6",
     "@tippy.js/react": "3.1.1",
     "@typescript-eslint/eslint-plugin": "8.41.0",
-    "babel-plugin-superjson-next": "0.4.1",
     "cloudinary": "1.27.1",
     "cookie": "0.4.1",
     "next": "^15.5.2",
@@ -38,8 +37,6 @@
     "react-linkify": "1.0.0-alpha",
     "react-markdown": "10.1.0",
     "string-replace-to-array": "2.1.0",
-    "styled-components": "5.3.1",
-    "superjson": "1.8.0",
     "timeago.js": "4.0.2"
   },
   "devDependencies": {
@@ -48,7 +45,6 @@
     "@types/react": "19.1.12",
     "@typescript-eslint/parser": "8.41.0",
     "autoprefixer": "^10.4.21",
-    "babel-plugin-styled-components": "2.1.4",
     "dotenv-cli": "4.0.0",
     "eslint": "9.34.0",
     "eslint-config-next": "^15.5.2",

@@ -12,8 +12,12 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { getVisitors } from '~/lib/api'
 import { GetStaticProps, GetStaticPropsContext } from 'next'
 
+// Modified type with string dates for serialization
 interface AMAProps {
-  questions: AmaQuestion[]
+  questions: (Omit<AmaQuestion, 'createdAt' | 'updatedAt'> & {
+    createdAt: string
+    updatedAt: string
+  })[]
   visitors: number
 }
 
@@ -114,7 +118,11 @@ export const getStaticProps: GetStaticProps = async (
 
   return {
     props: {
-      questions,
+      questions: questions.map((q) => ({
+        ...q,
+        createdAt: q.createdAt.toISOString(),
+        updatedAt: q.updatedAt.toISOString(),
+      })),
       visitors,
     },
     revalidate: 1,
