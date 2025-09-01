@@ -1,33 +1,9 @@
 import * as React from 'react'
-import styled from 'styled-components'
 
 type Props = {
   glyph: string
   size?: number
 }
-
-export const InlineSvg = styled.svg`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  color: inherit;
-  fill: currentColor;
-`
-
-export const SvgWrapper = styled.div`
-  display: inline-block;
-  flex: 0 0 ${(props) => (props.size ? `${props.size}px` : '32px')};
-  width: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  height: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  min-width: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  min-height: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  position: relative;
-  color: inherit;
-`
 
 type GlyphProps = {
   glyph: string
@@ -74,8 +50,18 @@ export default function Icon(props: Props) {
   const { size = 32, glyph } = props
 
   return (
-    <SvgWrapper size={size} className="icon">
-      <InlineSvg
+    <div
+      className="inline-block relative text-inherit icon"
+      style={{
+        flex: `0 0 ${size}px`,
+        width: `${size}px`,
+        height: `${size}px`,
+        minWidth: `${size}px`,
+        minHeight: `${size}px`,
+      }}
+    >
+      <svg
+        className="absolute inset-0 w-full h-full text-inherit fill-current"
         fillRule="evenodd"
         clipRule="evenodd"
         strokeLinejoin="round"
@@ -84,11 +70,10 @@ export default function Icon(props: Props) {
         aria-label={glyph}
         viewBox="0 0 32 32"
         preserveAspectRatio="xMidYMid meet"
-        fit
       >
         <title>{glyph}</title>
         <Glyph glyph={glyph} />
-      </InlineSvg>
-    </SvgWrapper>
+      </svg>
+    </div>
   )
 }
