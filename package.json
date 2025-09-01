@@ -7,7 +7,7 @@
     "prisma:generate:dataproxy": "PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint ./src/pages/* ./src/components/* ./src/pages/api/* ./src/lib/* ./src/types/* -c .eslintrc.json --fix --ext ts,tsx",
+    "lint": "eslint src --fix",
     "husky:install": "husky install",
     "db:push": "prisma db push",
     "prod:db:seed": "dotenv -- sh -c 'DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma db seed'"
@@ -43,6 +43,7 @@
     "timeago.js": "4.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.34.0",
     "@types/node": "24.3.0",
     "@types/react": "19.1.12",
     "@typescript-eslint/parser": "8.41.0",
@@ -55,6 +56,7 @@
     "eslint-plugin-mdx": "3.6.2",
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react": "7.37.5",
+    "globals": "^16.3.0",
     "lint-staged": "11.2.3",
     "postcss": "8.5.6",
     "postcss-import": "16.1.1",
