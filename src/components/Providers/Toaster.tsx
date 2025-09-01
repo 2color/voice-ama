@@ -14,17 +14,17 @@ export default function Toast() {
         duration: 2000,
         success: {
           duration: 2000,
-          theme: {
-            primary: 'green',
-            secondary: 'black',
-          },
+          // theme: {
+          //   primary: 'green',
+          //   secondary: 'black',
+          // },
         },
         error: {
           duration: 2000,
-          theme: {
-            primary: 'red',
-            secondary: 'white',
-          },
+          // theme: {
+          //   primary: 'red',
+          //   secondary: 'white',
+          // },
         },
       }}
     />

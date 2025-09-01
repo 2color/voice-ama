@@ -15,9 +15,7 @@ function MissingPage() {
           />
           <div>
             <Link href="/" passHref>
-              <a>
-                <Button>Return home</Button>
-              </a>
+              <Button>Return home</Button>
             </Link>
           </div>
         </div>

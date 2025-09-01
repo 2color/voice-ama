@@ -3,14 +3,14 @@ import Page, { PageHeader } from '~/components/Page'
 import AMAQuestions from '~/components/AMAQuestions'
 import { CenteredColumn } from '~/components/Layouts'
 import { Highlighter } from '~/components/Highlighter'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { NextSeo } from 'next-seo'
 import routes from '~/config/routes'
 import { prisma } from '~/lib/prisma'
 import { AmaQuestion } from '~/types/Ama'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { getVisitors } from '~/lib/api'
-import { GetStaticProps, NextPageContext } from 'next'
+import { GetStaticProps, GetStaticPropsContext } from 'next'
 
 interface AMAProps {
   questions: AmaQuestion[]
@@ -18,7 +18,9 @@ interface AMAProps {
 }
 
 const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
-  const { data: visitors } = useQuery('visitors', () => getVisitors(), {
+  const { data: visitors } = useQuery({
+    queryKey: ['visitors'],
+    queryFn: getVisitors,
     refetchInterval: false,
     initialData: initialVisitors,
   })
@@ -89,7 +91,7 @@ function people(visitors: number): string {
 }
 
 export const getStaticProps: GetStaticProps = async (
-  context: NextPageContext
+  context: GetStaticPropsContext
 ) => {
   const [questions, visitors] = await Promise.all([
     prisma.ama.findMany({

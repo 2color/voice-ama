@@ -5,7 +5,7 @@ import Button, { DeleteButton, RecordingButton } from '../Button'
 import Spinner from '../LoadingSpinner'
 import { ErrorAlert } from '../Alert'
 import { Trash } from 'react-feather'
-import { useMutation } from 'react-query'
+import { useMutation } from '@tanstack/react-query'
 import { signUpload, uploadToCloudinary } from '~/lib/api'
 
 interface Props {
@@ -208,7 +208,8 @@ export default function AudioRecorder({
     signUploadMutation.mutate()
   }
 
-  const signUploadMutation = useMutation(signUpload, {
+  const signUploadMutation = useMutation({
+    mutationFn: () => signUpload(),
     onSuccess: async (data, variables, context) => {
       const upload = await uploadToCloudinary(
         state.audioBlob,

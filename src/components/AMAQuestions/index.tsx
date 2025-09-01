@@ -8,21 +8,19 @@ import FullscreenLoading from '../FullscreenLoading'
 import Button from '../Button'
 import { AmaQuestion } from '~/types/Ama'
 import { useSession } from 'next-auth/react'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getQuestions } from '~/lib/api'
 
 const QuestionsList: React.FC<{ questions: AmaQuestion[] }> = (props) => {
   const { status, data: session } = useSession({ required: false })
   const isAuthenticated = status === 'authenticated'
 
-  const { isLoading, data: questions } = useQuery(
-    ['questions', 'ANSWERED'],
-    () => getQuestions(true),
-    {
-      initialData: props.questions,
-      staleTime: 1000 * 60 * 5,
-    }
-  )
+  const { isLoading, data: questions } = useQuery({
+    queryKey: ['questions', 'ANSWERED'],
+    queryFn: () => getQuestions(true),
+    initialData: props.questions,
+    staleTime: 1000 * 60 * 5,
+  })
 
   // const [showLoadMore, setShowLoadMore] = React.useState(true)
   // const [loading, setLoading] = React.useState(false)

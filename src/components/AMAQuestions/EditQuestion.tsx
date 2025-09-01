@@ -5,7 +5,7 @@ import AudioRecorder from '../AudioRecorder'
 import toast from 'react-hot-toast'
 import { AmaQuestion } from '~/types/Ama'
 import { deleteAma, updateAMAQuestion } from '~/lib/api'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 interface Props {
   question: AmaQuestion
@@ -88,9 +88,12 @@ export default function EditQuestion({ question, onDone }: Props) {
 
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
-  const deleteQuestion = useMutation(() => deleteAma(question.id), {
+  const deleteQuestion = useMutation({
+    mutationFn: () => deleteAma(question.id),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(['questions', question.status])
+      queryClient.invalidateQueries({
+        queryKey: ['questions', question.status],
+      })
       return onDone()
     },
     onError: (error, variables, context) => {
@@ -98,8 +101,8 @@ export default function EditQuestion({ question, onDone }: Props) {
     },
   })
 
-  const updateQuestion = useMutation<AmaQuestion>(
-    () => {
+  const updateQuestion = useMutation<AmaQuestion>({
+    mutationFn: () => {
       // Status is ANSWERED if there's a text answer or audio url
       const status =
         state.answer.length > 0 || state.src ? 'ANSWERED' : 'UNANSWERED'
@@ -112,19 +115,19 @@ export default function EditQuestion({ question, onDone }: Props) {
         audioWaveform: state.waveform,
       })
     },
-    {
-      onSuccess: async (question, variables, context) => {
-        // Invalidate to refetch both answered and unanswered questions in case the status changes
-        // awaiting the invalidate ensures that the new waveform is re-rendered
-        onDone()
-        await queryClient.invalidateQueries(['questions'])
-        return
-      },
-      onError: (error, variables, context) => {
-        toast(`Error deleting question: ${error}`)
-      },
-    }
-  )
+    onSuccess: async (question, variables, context) => {
+      // Invalidate to refetch both answered and unanswered questions in case the status changes
+      // awaiting the invalidate ensures that the new waveform is re-rendered
+      onDone()
+      await queryClient.invalidateQueries({
+        queryKey: ['questions'],
+      })
+      return
+    },
+    onError: (error, variables, context) => {
+      toast(`Error deleting question: ${error}`)
+    },
+  })
 
   function handleSave(e) {
     e.preventDefault()

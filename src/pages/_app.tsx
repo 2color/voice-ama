@@ -1,11 +1,10 @@
 import * as React from 'react'
 import Providers from '~/components/Providers'
 import '~/styles/tailwind.css'
-import 'tailwindcss/utilities.css'
 import '~/styles/custom-styles.css'
 import '~/styles/syntax-highlighting.css'
 import '~/styles/prose-styles.css'
-import { ReactQueryDevtools } from 'react-query/devtools'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
