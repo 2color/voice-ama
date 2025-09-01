@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Providers from '~/components/Providers'
-import '~/styles/tailwind.css'
-import '~/styles/custom-styles.css'
+import '~/styles/globals.css'
 import '~/styles/syntax-highlighting.css'
 import '~/styles/prose-styles.css'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
