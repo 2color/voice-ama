@@ -1,5 +1,10 @@
 import { extendSEO, defaultSEO } from './seo'
 
+/**
+ * Application routes configuration
+ * Defines navigation paths, labels, and SEO metadata for each page
+ * Used for consistent routing and SEO across the application
+ */
 const routes = {
   home: {
     label: 'Home',
@@ -12,7 +17,7 @@ const routes = {
     seo: extendSEO({
       title: 'Ask Me Anything',
       description: 'Answering questions, just for fun.',
-      image: 'meta/ama.png',
+      image: 'meta/ama.png', // Custom OG image for AMA page
       url: 'ama',
     }),
   },
@@ -21,7 +26,7 @@ const routes = {
     path: '/login',
     seo: extendSEO({
       title: 'Login',
-      description: 'What do you think you’re doing?',
+      description: 'What do you think you're doing?',
       url: 'login',
     }),
   },
