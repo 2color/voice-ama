@@ -9,8 +9,13 @@ import { Ama } from '@prisma/client'
  * Enhanced AMA question type with typed audio waveform data
  * Overrides Prisma's JsonValue type for better TypeScript experience
  */
-export type AmaQuestion = Omit<Ama, 'audioWaveform'> & {
+export type AmaQuestion = Omit<
+  Ama,
+  'audioWaveform' | 'createdAt' | 'updatedAt'
+> & {
   audioWaveform: number[] | null // Typed array instead of generic JsonValue
+  createdAt: string // ISO string instead of Date object
+  updatedAt: string // ISO string instead of Date object
 }
 
 /**

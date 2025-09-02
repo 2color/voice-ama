@@ -23,10 +23,7 @@ import { GetStaticProps } from 'next'
  * Note: dates are serialized as strings due to JSON serialization limitations
  */
 interface AMAProps {
-  questions: (Omit<AmaQuestion, 'createdAt' | 'updatedAt'> & {
-    createdAt: string // ISO string instead of Date object
-    updatedAt: string // ISO string instead of Date object
-  })[]
+  questions: AmaQuestion[]
   visitors: number // Current online visitor count
 }
 
