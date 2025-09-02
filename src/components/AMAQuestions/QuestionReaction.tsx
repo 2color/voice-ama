@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import { incrementAMAReactions } from '~/lib/api'
 import { AmaQuestion } from '~/types/Ama'
 import toast from 'react-hot-toast'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 interface Props {
   question: AmaQuestion
@@ -10,11 +10,14 @@ interface Props {
 const QuestionReaction: React.FC<Props> = ({ question }) => {
   const queryClient = useQueryClient()
 
-  const mutation = useMutation(incrementAMAReactions, {
-    onMutate: async (questionId) => {
+  const mutation = useMutation({
+    mutationFn: incrementAMAReactions,
+    onMutate: async () => {
       // Optimisitic update logic
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries(['questions', question.status])
+      await queryClient.cancelQueries({
+        queryKey: ['questions', question.status],
+      })
 
       // Snapshot the previous value
       const previousQuestions: AmaQuestion[] = queryClient.getQueryData([
@@ -58,7 +61,9 @@ const QuestionReaction: React.FC<Props> = ({ question }) => {
     },
     // Always refetch after error or success:
     onSettled: (question) => {
-      queryClient.invalidateQueries(['questions', question.status])
+      queryClient.invalidateQueries({
+        queryKey: ['questions', question.status],
+      })
     },
   })
 

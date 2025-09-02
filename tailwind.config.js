@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 const colors = require('tailwindcss/colors')
 
 const mono = [
@@ -11,7 +12,7 @@ const mono = [
   'monospace',
 ]
 module.exports = {
-  purge: ['./src/**/*.{js,jsx,ts,tsx,vue}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   darkMode: 'media',
   theme: {
     extend: {
@@ -22,7 +23,7 @@ module.exports = {
       },
       colors: {
         white: '#fff',
-        gray: colors.trueGray,
+        gray: colors.neutral,
         'gray-1000': '#050505',
       },
       boxShadow: {

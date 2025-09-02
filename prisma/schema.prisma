@@ -2,14 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
 }
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
 }
 
 // Ask me anything model for questions and answers
@@ -18,9 +16,9 @@ model Ama {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   question       String
-  answer         String?  @db.Text
+  answer         String?
   status         Status   @default(UNANSWERED)
-  audioUrl       String?  @db.Text
+  audioUrl       String?
   audioWaveform  Json?
   reactions      Int      @default(0)
   audioPlayCount Int      @default(0)

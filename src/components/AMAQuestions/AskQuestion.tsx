@@ -1,6 +1,6 @@
 import * as React from 'react'
 import toast from 'react-hot-toast'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Textarea } from '~/components/Input'
 import { addAMAQuestion } from '~/lib/api'
 import { ErrorAlert, SuccessAlert } from '../Alert'
@@ -10,15 +10,18 @@ export default function AskQuestion() {
   const [question, setQuestion] = React.useState('')
   const queryClient = useQueryClient()
 
-  const mutation = useMutation(addAMAQuestion, {
-    onSuccess: (data, variables, context) => {
+  const mutation = useMutation({
+    mutationFn: addAMAQuestion,
+    onSuccess: () => {
       // Invalidate pending questions so that the new question is rendered automatically.
-      queryClient.invalidateQueries(['questions', 'UNANSWERED'])
+      queryClient.invalidateQueries({
+        queryKey: ['questions', 'UNANSWERED'],
+      })
     },
-    onError: (error, variables, context) => {
+    onError: (error) => {
       toast(`Error adding your question: ${error}`)
     },
-    onSettled(data, error) {
+    onSettled() {
       setQuestion('')
     },
   })

@@ -1,21 +1,33 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
+/**
+ * Props for the Highlighter component
+ */
 type Props = {
-  count: number
+  count: number // The count value to watch for changes
+  children: React.ReactNode // Content to highlight when count changes
 }
 
+/**
+ * Visual highlight component that briefly highlights content when count changes
+ * Uses a yellow fade animation to draw attention to updated values
+ */
 export const Highlighter: React.FC<Props> = (props) => {
   const [highlightClass, setHighlightClass] = useState('')
-  const updateTimer = useRef(null)
+  const updateTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  /**
+   * Triggers the highlight animation for 1 second
+   */
   function setUpdate() {
     setHighlightClass('highlight')
     updateTimer.current = setTimeout(() => {
       setHighlightClass('')
       updateTimer.current = null
-    }, 1000)
+    }, 1000) // Animation duration: 1 second
   }
 
+  // Cleanup timer on component unmount
   useEffect(() => {
     return () => {
       if (updateTimer.current) {
@@ -24,6 +36,7 @@ export const Highlighter: React.FC<Props> = (props) => {
     }
   }, [])
 
+  // Trigger highlight animation when count changes
   useEffect(() => {
     if (!updateTimer.current) setUpdate()
   }, [props.count])
@@ -31,10 +44,11 @@ export const Highlighter: React.FC<Props> = (props) => {
   return (
     <div className={`py-1 px-2 rounded ${highlightClass}`}>
       {props.children}
+      {/* Inline CSS for the highlight animation - yellow fade effect */}
       <style>{`
         @keyframes yellowfade {
           from {
-            background: #FEF3C7;
+            background: #FEF3C7; /* Tailwind yellow-100 */
           }
           to {
             background: transparent;
@@ -42,7 +56,7 @@ export const Highlighter: React.FC<Props> = (props) => {
         }
 
         .highlight {
-          animation: yellowfade 1s;
+          animation: yellowfade 1s ease-out;
         }
       `}</style>
     </div>

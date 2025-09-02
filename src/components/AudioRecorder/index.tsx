@@ -5,7 +5,7 @@ import Button, { DeleteButton, RecordingButton } from '../Button'
 import Spinner from '../LoadingSpinner'
 import { ErrorAlert } from '../Alert'
 import { Trash } from 'react-feather'
-import { useMutation } from 'react-query'
+import { useMutation } from '@tanstack/react-query'
 import { signUpload, uploadToCloudinary } from '~/lib/api'
 
 interface Props {
@@ -17,22 +17,28 @@ interface Props {
   onRecordingError?: Function
   // onTranscriptionComplete?: (e: OnComplete) => void
   onDeleteAudio?: Function
+  // eslint-disable-next-line no-unused-vars
   onUploadCompleteComplete: (e: { waveform: number[]; src: string }) => void
 }
 
+/**
+ * AudioRecorder state machine states
+ * Manages the complex flow: idle -> recording -> recorded -> uploading -> done
+ * Each state determines what UI components are visible and what actions are available
+ */
 interface State {
   status:
-    | 'idle'
-    | 'recording'
-    | 'recorded'
-    | 'uploading'
-    // | 'transcribing'
-    | 'done'
-  audioUrl: string | null
-  audioBlob: Blob | null
-  waveform: number[]
-  // transcript: string | null
-  error: string | null
+    | 'idle' // Ready to start recording
+    | 'recording' // Currently recording audio
+    | 'recorded' // Recording complete, ready for playback/upload
+    | 'uploading' // Uploading to Cloudinary
+    // | 'transcribing'  // Transcription disabled for now
+    | 'done' // Upload complete, final state
+  audioUrl: string | null // Local blob URL for playback
+  audioBlob: Blob | null // Raw audio data for upload
+  waveform: number[] // Visual waveform data for player
+  // transcript: string | null // Speech-to-text disabled for now
+  error: string | null // Error message to display
 }
 
 type Action =
@@ -47,7 +53,6 @@ type Action =
   | { type: 'delete' }
 
 export default function AudioRecorder({
-  id,
   initialAudioUrl = null,
   initialWaveform = [],
   onRecordingStart,
@@ -135,6 +140,7 @@ export default function AudioRecorder({
   const [audioChunks, setAudioChunks] = React.useState([])
   const [mediaRecorder, setMediaRecorder] = React.useState(null)
 
+  // Initialize MediaRecorder with microphone access on component mount
   React.useEffect(() => {
     async function handleMediaSetup() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -147,25 +153,24 @@ export default function AudioRecorder({
       }
     }
 
-    // navigator.getUserMedia =
-    //   navigator.getUserMedia ||
-    //   navigator.webkitGetUserMedia ||
-    //   navigator.mozGetUserMedia ||
-    //   navigator.msGetUserMedia
-
+    // Modern browsers require HTTPS for microphone access
+    // MediaDevices API is only available in secure contexts
     if (navigator.mediaDevices) {
       handleMediaSetup()
     } else {
       dispatch({
         type: 'error',
-        error: 'Media Decives will work only with SSL',
+        error: 'Media Devices will work only with SSL', // Fixed typo
       })
     }
   }, [])
 
+  // Set up MediaRecorder event handlers for chunk collection
   React.useEffect(() => {
     if (mediaRecorder) {
-      mediaRecorder.ondataavailable = (e) => {
+      // Collect audio data chunks as they become available during recording
+      // MediaRecorder emits data in chunks to prevent memory issues with long recordings
+      mediaRecorder.ondataavailable = (e: BlobEvent) => {
         if (e.data && e.data.size > 0) {
           setAudioChunks((state) => [...state, e.data])
         }
@@ -185,6 +190,9 @@ export default function AudioRecorder({
 
   function stopRecording() {
     mediaRecorder.stop()
+    // Combine all collected chunks into a single Blob for playback and upload
+    // Note: Despite setting type to 'audio/mp3', actual format depends on browser
+    // Chrome produces WebM, Safari produces MP4 - Cloudinary handles conversion
     const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' })
     let audioUrl = window.URL.createObjectURL(audioBlob)
     onRecordingStop && onRecordingStop()
@@ -208,8 +216,12 @@ export default function AudioRecorder({
     signUploadMutation.mutate()
   }
 
-  const signUploadMutation = useMutation(signUpload, {
-    onSuccess: async (data, variables, context) => {
+  // Two-step upload process: get signed credentials, then upload to Cloudinary
+  const signUploadMutation = useMutation({
+    mutationFn: () => signUpload(),
+    onSuccess: async (data) => {
+      // Use signed credentials to securely upload directly to Cloudinary
+      // This avoids routing large audio files through our API server
       const upload = await uploadToCloudinary(
         state.audioBlob,
         data.folder,
@@ -218,7 +230,7 @@ export default function AudioRecorder({
       )
       onUploadCompleteComplete({
         waveform: state.waveform,
-        src: upload.secure_url,
+        src: upload.secure_url, // CDN URL for the uploaded audio
       })
     },
   })
@@ -243,7 +255,7 @@ export default function AudioRecorder({
             id={null}
             isRecorder={true}
             waveform={state.waveform}
-            setWaveformData={(waveform) =>
+            setWaveformData={(waveform: number[]) =>
               dispatch({ type: 'set-waveform', waveform })
             }
             src={state.audioUrl}

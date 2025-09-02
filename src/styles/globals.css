@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Write your own custom component styles here */
 @font-face {
   font-family: 'iA Quattro';

@@ -1,33 +1,51 @@
 import * as React from 'react'
+// UI Components
 import Page, { PageHeader } from '~/components/Page'
 import AMAQuestions from '~/components/AMAQuestions'
 import { CenteredColumn } from '~/components/Layouts'
 import { Highlighter } from '~/components/Highlighter'
-import { useQuery } from 'react-query'
+// Data fetching and state management
+import { useQuery } from '@tanstack/react-query'
 import { NextSeo } from 'next-seo'
+// Configuration and utilities
 import routes from '~/config/routes'
 import { prisma } from '~/lib/prisma'
 import { AmaQuestion } from '~/types/Ama'
+// Authentication
 import { signIn, signOut, useSession } from 'next-auth/react'
+// API functions
 import { getVisitors } from '~/lib/api'
-import { GetStaticProps, NextPageContext } from 'next'
+// Next.js types
+import { GetStaticProps } from 'next'
 
+/**
+ * Props for the main AMA page
+ * Note: dates are serialized as strings due to JSON serialization limitations
+ */
 interface AMAProps {
   questions: AmaQuestion[]
-  visitors: number
+  visitors: number // Current online visitor count
 }
 
+/**
+ * Main AMA (Ask Me Anything) page component
+ * Displays answered questions and handles user authentication
+ */
 const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
-  const { data: visitors } = useQuery('visitors', () => getVisitors(), {
-    refetchInterval: false,
-    initialData: initialVisitors,
+  // Real-time visitor count with React Query (updates from server periodically)
+  const { data: visitors } = useQuery({
+    queryKey: ['visitors'],
+    queryFn: getVisitors,
+    refetchInterval: false, // No auto-refresh to reduce server load
+    initialData: initialVisitors, // Use SSG data as fallback
   })
 
+  // NextAuth session management
   const { status, data: session } = useSession({ required: false })
-  const isAuthenticated = status === 'authenticated'
 
   return (
     <Page>
+      {/* SEO meta tags */}
       <NextSeo
         title={routes.ama.seo.title}
         description={routes.ama.seo.description}
@@ -36,7 +54,9 @@ const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
 
       <CenteredColumn>
         <div className="space-y-8">
+          {/* Header with authentication and visitor count */}
           <div className="flex items-center">
+            {/* Authenticated user menu */}
             {status === 'authenticated' && (
               <div className="flex flex-row items-center gap-2 content-center">
                 <img
@@ -54,6 +74,7 @@ const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
                 </button>
               </div>
             )}
+            {/* Login button for unauthenticated users */}
             {status === 'unauthenticated' && (
               <button
                 onClick={signIn.bind(signIn, 'github')}
@@ -62,6 +83,7 @@ const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
                 Login
               </button>
             )}
+            {/* Live visitor counter with green indicator */}
             <div className={`ml-auto ${Number(visitors) === 0 && `hidden`}`}>
               <Highlighter count={visitors}>
                 <div className="flex items-center">
@@ -84,14 +106,22 @@ const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
   )
 }
 
+/**
+ * Utility function to pluralize "person" vs "people"
+ */
 function people(visitors: number): string {
   return visitors === 1 ? 'person' : 'people'
 }
 
-export const getStaticProps: GetStaticProps = async (
-  context: NextPageContext
-) => {
+/**
+ * Static Site Generation (SSG) with Incremental Static Regeneration (ISR)
+ * Fetches answered questions and current visitor count at build time
+ * Regenerates every 1 second to keep content fresh
+ */
+export const getStaticProps: GetStaticProps = async () => {
+  // Parallel database queries for optimal performance
   const [questions, visitors] = await Promise.all([
+    // Get all answered questions, newest first
     prisma.ama.findMany({
       where: {
         status: 'ANSWERED',
@@ -100,6 +130,7 @@ export const getStaticProps: GetStaticProps = async (
         createdAt: 'desc',
       },
     }),
+    // Count active visitors (visited in last 5 minutes)
     prisma.visitor.count({
       where: {
         // Track people that visited the website in the last 5 minutes
@@ -112,9 +143,16 @@ export const getStaticProps: GetStaticProps = async (
 
   return {
     props: {
-      questions,
+      // Convert Date objects to ISO strings for JSON serialization
+      // This avoids the need for superjson or similar libraries
+      questions: questions.map((q) => ({
+        ...q,
+        createdAt: q.createdAt.toISOString(),
+        updatedAt: q.updatedAt.toISOString(),
+      })),
       visitors,
     },
+    // Revalidate every 1 second to keep content up-to-date
     revalidate: 1,
   }
 }

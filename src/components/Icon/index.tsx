@@ -1,38 +1,24 @@
 import * as React from 'react'
-import styled from 'styled-components'
 
+/**
+ * Icon component props
+ */
 type Props = {
-  glyph: string
-  size?: number
+  glyph: string // The icon name/identifier (e.g., 'facebook', 'github', 'twitter')
+  size?: number // Icon size in pixels (default: 32px)
 }
 
-export const InlineSvg = styled.svg`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  color: inherit;
-  fill: currentColor;
-`
-
-export const SvgWrapper = styled.div`
-  display: inline-block;
-  flex: 0 0 ${(props) => (props.size ? `${props.size}px` : '32px')};
-  width: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  height: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  min-width: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  min-height: ${(props) => (props.size ? `${props.size}px` : '32px')};
-  position: relative;
-  color: inherit;
-`
-
+/**
+ * Props for the individual glyph/icon path components
+ */
 type GlyphProps = {
-  glyph: string
+  glyph: string // The icon identifier
 }
 
+/**
+ * SVG path components for different social media and utility icons
+ * Each case returns the SVG paths for the requested icon
+ */
 export const Glyph = ({ glyph }: GlyphProps): any => {
   switch (glyph) {
     case 'facebook':
@@ -70,12 +56,31 @@ export const Glyph = ({ glyph }: GlyphProps): any => {
   }
 }
 
+/**
+ * Scalable vector icon component
+ * Renders social media and utility icons using inline SVG
+ * Supports dynamic sizing and inherits text color from parent
+ *
+ * @param props.glyph - Icon identifier (facebook, github, twitter, link, share)
+ * @param props.size - Icon size in pixels (default: 32)
+ */
 export default function Icon(props: Props) {
   const { size = 32, glyph } = props
 
   return (
-    <SvgWrapper size={size} className="icon">
-      <InlineSvg
+    <div
+      className="inline-block relative text-inherit icon"
+      style={{
+        // Fixed dimensions to prevent layout shift
+        flex: `0 0 ${size}px`,
+        width: `${size}px`,
+        height: `${size}px`,
+        minWidth: `${size}px`,
+        minHeight: `${size}px`,
+      }}
+    >
+      <svg
+        className="absolute inset-0 w-full h-full text-inherit fill-current"
         fillRule="evenodd"
         clipRule="evenodd"
         strokeLinejoin="round"
@@ -84,11 +89,10 @@ export default function Icon(props: Props) {
         aria-label={glyph}
         viewBox="0 0 32 32"
         preserveAspectRatio="xMidYMid meet"
-        fit
       >
         <title>{glyph}</title>
         <Glyph glyph={glyph} />
-      </InlineSvg>
-    </SvgWrapper>
+      </svg>
+    </div>
   )
 }

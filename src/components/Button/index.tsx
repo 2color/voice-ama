@@ -4,7 +4,7 @@ type Props = {
   className?: string
   onClick?: any
   disabled?: boolean
-  children: React.ReactChild | string | string[]
+  children: React.ReactNode
   type?: string
 } & React.ComponentPropsWithoutRef<'button'>
 

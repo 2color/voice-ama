@@ -42,14 +42,17 @@ export default function Header() {
             const defaultClasses = `flex font-sans items-center pl-12 py-4 font-semibold text-sm text-primary text-opacity-80`
 
             return (
-              <Link href={route.path} key={route.path}>
-                <a className={`${defaultClasses}`}>{route.label}</a>
+              <Link
+                href={route.path}
+                key={route.path}
+                className={`${defaultClasses}`}
+              >
+                {route.label}
               </Link>
             )
           })}
       </div>
       {/* End mobile nav */}
-
       {/* Desktop nav */}
       <div className="hidden max-w-screen-md grid-cols-4 gap-1 mx-auto md:grid">
         {defaultRoutes.map((route) => {
@@ -58,14 +61,14 @@ export default function Header() {
           const activeClasses = `bg-gray-1000 bg-opacity-5 dark:bg-white text-primary filter-saturate filter-blur`
           const inactiveClasses = `hover:bg-gray-900 filter-saturate hover:bg-opacity-5 dark:hover:bg-white dark:text-white  hover:text-gray-1000 dark:hover:text-gray-100 text-tertiary`
           return (
-            <Link href={route.path} key={route.path}>
-              <a
-                className={`
-                ${defaultClasses} 
-                ${isActive ? activeClasses : inactiveClasses}`}
-              >
-                {route.label}
-              </a>
+            <Link
+              href={route.path}
+              key={route.path}
+              className={`
+              ${defaultClasses}
+              ${isActive ? activeClasses : inactiveClasses}`}
+            >
+              {route.label}
             </Link>
           )
         })}

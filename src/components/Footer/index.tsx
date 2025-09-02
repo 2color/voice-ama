@@ -8,12 +8,12 @@ export function Footer() {
       <div className="h-px bg-gray-200 dark:bg-gray-800 timeline-stroke" />
       <div className="grid grid-cols-1 gap-4 p-6 py-24 bg-gray-100 sm:grid-cols-3 dark:bg-gray-900 sm:bg-gray-50 sm:dark:bg-gray-1000">
         <div className="space-y-4 ">
-          <Link href="/" as="/" passHref>
-            <a className="black-link">Home</a>
+          <Link href="/" as="/" passHref className="black-link">
+            Home
           </Link>
 
-          <Link href="/about" as="/about" passHref>
-            <a className="black-link">About</a>
+          <Link href="/about" as="/about" passHref className="black-link">
+            About
           </Link>
 
           <a href="https://twitter.com/daniel2color" className="black-link">
@@ -22,32 +22,42 @@ export function Footer() {
         </div>
 
         <div className="space-y-4 ">
-          <Link href="/writing" as="/writing" passHref>
-            <a className="black-link">Writing</a>
+          <Link href="/writing" as="/writing" passHref className="black-link">
+            Writing
           </Link>
-          <Link href="/app-dissection" as="/app-dissection" passHref>
-            <a className="black-link">App Dissection</a>
+          <Link
+            href="/app-dissection"
+            as="/app-dissection"
+            passHref
+            className="black-link"
+          >
+            App Dissection
           </Link>
-          <Link href="/ama" as="/ama" passHref>
-            <a className="black-link">AMA</a>
+          <Link href="/ama" as="/ama" passHref className="black-link">
+            AMA
           </Link>
         </div>
 
         <div className="space-y-4 ">
-          <Link href="/bookmarks" as="/bookmarks" passHref>
-            <a className="black-link">Bookmarks</a>
+          <Link
+            href="/bookmarks"
+            as="/bookmarks"
+            passHref
+            className="black-link"
+          >
+            Bookmarks
           </Link>
 
-          <Link href="/hn" as="/hn" passHref>
-            <a className="black-link">Hacker News</a>
+          <Link href="/hn" as="/hn" passHref className="black-link">
+            Hacker News
           </Link>
 
-          <Link href="/stack" as="/stack" passHref>
-            <a className="black-link">My Stack</a>
+          <Link href="/stack" as="/stack" passHref className="black-link">
+            My Stack
           </Link>
 
-          <Link href="/security" as="/security" passHref>
-            <a className="black-link">Security Checklist</a>
+          <Link href="/security" as="/security" passHref className="black-link">
+            Security Checklist
           </Link>
         </div>
       </div>

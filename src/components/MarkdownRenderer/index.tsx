@@ -15,7 +15,7 @@ function LinkRenderer(props: any) {
   if (isSelf) {
     return (
       <Link href={href === baseUrl ? '/' : href.replace(baseUrl, '')}>
-        <a>{children}</a>
+        {children}
       </Link>
     )
   }
