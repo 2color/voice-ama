@@ -26,7 +26,7 @@ const routes = {
     path: '/login',
     seo: extendSEO({
       title: 'Login',
-      description: 'What do you think you're doing?',
+      description: 'Login to answer questions',
       url: 'login',
     }),
   },
