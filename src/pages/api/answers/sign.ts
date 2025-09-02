@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]'
 import cloudinary from '~/lib/cloudinary'
 
 const {
@@ -17,7 +18,7 @@ export default async function handle(
   //   return
   // }
   try {
-    const session = await getSession({ req })
+    const session = await getServerSession(req, res, authOptions)
     if (!session.isAdmin) {
       return res.status(401).end()
     }

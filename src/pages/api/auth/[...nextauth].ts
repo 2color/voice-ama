@@ -8,7 +8,7 @@ import { prisma } from '~/lib/prisma'
  * Uses Prisma adapter to store user sessions in the database
  * Adds admin role information to user sessions
  */
-export default NextAuth({
+export const authOptions = {
   // Enable debug logging in development
   debug: process.env.NEXTAUTH_DEBUG === 'true',
   
@@ -32,4 +32,6 @@ export default NextAuth({
       return session
     },
   },
-})
+}
+
+export default NextAuth(authOptions)
