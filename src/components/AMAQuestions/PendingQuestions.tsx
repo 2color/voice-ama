@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Divider from '../Divider'
 import { QuestionItem } from './QuestionItem'
 import LoadingSpinner from '../LoadingSpinner'

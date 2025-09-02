@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import { incrementAMAReactions } from '~/lib/api'
 import { AmaQuestion } from '~/types/Ama'
 import toast from 'react-hot-toast'
@@ -12,7 +12,7 @@ const QuestionReaction: React.FC<Props> = ({ question }) => {
 
   const mutation = useMutation({
     mutationFn: incrementAMAReactions,
-    onMutate: async (questionId) => {
+    onMutate: async () => {
       // Optimisitic update logic
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({

@@ -60,7 +60,7 @@ export const Glyph = ({ glyph }: GlyphProps): any => {
  * Scalable vector icon component
  * Renders social media and utility icons using inline SVG
  * Supports dynamic sizing and inherits text color from parent
- * 
+ *
  * @param props.glyph - Icon identifier (facebook, github, twitter, link, share)
  * @param props.size - Icon size in pixels (default: 32)
  */

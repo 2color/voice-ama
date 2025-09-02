@@ -17,6 +17,7 @@ interface Props {
   onRecordingError?: Function
   // onTranscriptionComplete?: (e: OnComplete) => void
   onDeleteAudio?: Function
+  // eslint-disable-next-line no-unused-vars
   onUploadCompleteComplete: (e: { waveform: number[]; src: string }) => void
 }
 
@@ -27,17 +28,17 @@ interface Props {
  */
 interface State {
   status:
-    | 'idle'        // Ready to start recording
-    | 'recording'   // Currently recording audio
-    | 'recorded'    // Recording complete, ready for playback/upload
-    | 'uploading'   // Uploading to Cloudinary
+    | 'idle' // Ready to start recording
+    | 'recording' // Currently recording audio
+    | 'recorded' // Recording complete, ready for playback/upload
+    | 'uploading' // Uploading to Cloudinary
     // | 'transcribing'  // Transcription disabled for now
-    | 'done'        // Upload complete, final state
-  audioUrl: string | null      // Local blob URL for playback
-  audioBlob: Blob | null       // Raw audio data for upload
-  waveform: number[]           // Visual waveform data for player
+    | 'done' // Upload complete, final state
+  audioUrl: string | null // Local blob URL for playback
+  audioBlob: Blob | null // Raw audio data for upload
+  waveform: number[] // Visual waveform data for player
   // transcript: string | null // Speech-to-text disabled for now
-  error: string | null         // Error message to display
+  error: string | null // Error message to display
 }
 
 type Action =
@@ -52,7 +53,6 @@ type Action =
   | { type: 'delete' }
 
 export default function AudioRecorder({
-  id,
   initialAudioUrl = null,
   initialWaveform = [],
   onRecordingStart,
@@ -170,7 +170,7 @@ export default function AudioRecorder({
     if (mediaRecorder) {
       // Collect audio data chunks as they become available during recording
       // MediaRecorder emits data in chunks to prevent memory issues with long recordings
-      mediaRecorder.ondataavailable = (e) => {
+      mediaRecorder.ondataavailable = (e: BlobEvent) => {
         if (e.data && e.data.size > 0) {
           setAudioChunks((state) => [...state, e.data])
         }
@@ -219,7 +219,7 @@ export default function AudioRecorder({
   // Two-step upload process: get signed credentials, then upload to Cloudinary
   const signUploadMutation = useMutation({
     mutationFn: () => signUpload(),
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data) => {
       // Use signed credentials to securely upload directly to Cloudinary
       // This avoids routing large audio files through our API server
       const upload = await uploadToCloudinary(
@@ -255,7 +255,7 @@ export default function AudioRecorder({
             id={null}
             isRecorder={true}
             waveform={state.waveform}
-            setWaveformData={(waveform) =>
+            setWaveformData={(waveform: number[]) =>
               dispatch({ type: 'set-waveform', waveform })
             }
             src={state.audioUrl}

@@ -12,16 +12,16 @@ export default function AskQuestion() {
 
   const mutation = useMutation({
     mutationFn: addAMAQuestion,
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       // Invalidate pending questions so that the new question is rendered automatically.
       queryClient.invalidateQueries({
         queryKey: ['questions', 'UNANSWERED'],
       })
     },
-    onError: (error, variables, context) => {
+    onError: (error) => {
       toast(`Error adding your question: ${error}`)
     },
-    onSettled(data, error) {
+    onSettled() {
       setQuestion('')
     },
   })

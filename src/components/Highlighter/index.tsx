@@ -14,7 +14,7 @@ type Props = {
  */
 export const Highlighter: React.FC<Props> = (props) => {
   const [highlightClass, setHighlightClass] = useState('')
-  const updateTimer = useRef<NodeJS.Timeout | null>(null)
+  const updateTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   /**
    * Triggers the highlight animation for 1 second

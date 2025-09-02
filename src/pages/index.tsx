@@ -16,7 +16,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 // API functions
 import { getVisitors } from '~/lib/api'
 // Next.js types
-import { GetStaticProps, GetStaticPropsContext } from 'next'
+import { GetStaticProps } from 'next'
 
 /**
  * Props for the main AMA page
@@ -45,7 +45,6 @@ const AMA: React.FC<AMAProps> = ({ questions, visitors: initialVisitors }) => {
 
   // NextAuth session management
   const { status, data: session } = useSession({ required: false })
-  const isAuthenticated = status === 'authenticated'
 
   return (
     <Page>
@@ -122,9 +121,7 @@ function people(visitors: number): string {
  * Fetches answered questions and current visitor count at build time
  * Regenerates every 1 second to keep content fresh
  */
-export const getStaticProps: GetStaticProps = async (
-  context: GetStaticPropsContext
-) => {
+export const getStaticProps: GetStaticProps = async () => {
   // Parallel database queries for optimal performance
   const [questions, visitors] = await Promise.all([
     // Get all answered questions, newest first

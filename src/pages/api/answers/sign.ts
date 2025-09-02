@@ -29,6 +29,7 @@ export default async function handle(
     )
     return res.status(200).json({ folder, signature, timestamp })
   } catch (error) {
+    console.error(error)
     return res.status(500).end()
   }
 }

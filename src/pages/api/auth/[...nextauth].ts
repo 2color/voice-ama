@@ -11,10 +11,10 @@ import { prisma } from '~/lib/prisma'
 export const authOptions = {
   // Enable debug logging in development
   debug: process.env.NEXTAUTH_DEBUG === 'true',
-  
+
   // Use Prisma adapter for database session storage
   adapter: PrismaAdapter(prisma),
-  
+
   // Authentication providers
   providers: [
     GithubProvider({
@@ -22,10 +22,10 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
   ],
-  
+
   // Custom callbacks to modify session data
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, user }) {
       // Add admin flag to client-side session object
       // This allows UI to conditionally show admin features
       session.isAdmin = user.isAdmin

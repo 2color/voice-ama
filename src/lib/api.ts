@@ -5,7 +5,6 @@ import {
   UpdateAmaQuestion,
 } from '~/types/Ama'
 import { UploadSignatureMetadata } from '~/types/Upload'
-import { Visitor } from '@prisma/client'
 
 /**
  * API client functions for AMA (Ask Me Anything) application

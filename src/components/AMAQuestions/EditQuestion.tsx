@@ -90,13 +90,13 @@ export default function EditQuestion({ question, onDone }: Props) {
 
   const deleteQuestion = useMutation({
     mutationFn: () => deleteAma(question.id),
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['questions', question.status],
       })
       return onDone()
     },
-    onError: (error, variables, context) => {
+    onError: (error) => {
       toast(`Error deleting question: ${error}`)
     },
   })
@@ -115,7 +115,7 @@ export default function EditQuestion({ question, onDone }: Props) {
         audioWaveform: state.waveform,
       })
     },
-    onSuccess: async (question, variables, context) => {
+    onSuccess: async () => {
       // Invalidate to refetch both answered and unanswered questions in case the status changes
       // awaiting the invalidate ensures that the new waveform is re-rendered
       onDone()
@@ -124,7 +124,7 @@ export default function EditQuestion({ question, onDone }: Props) {
       })
       return
     },
-    onError: (error, variables, context) => {
+    onError: (error) => {
       toast(`Error deleting question: ${error}`)
     },
   })

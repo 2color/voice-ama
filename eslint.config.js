@@ -9,6 +9,7 @@ import globals from 'globals'
 export default [
   js.configs.recommended,
   {
+    ignores: ['**/*.d.ts'],
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       parser: typescriptParser,
@@ -17,27 +18,27 @@ export default [
         ...globals.node,
         ...globals.jest,
         ...globals.jasmine,
-        ...globals.es2015
-      }
+        ...globals.es2015,
+      },
     },
     plugins: {
       '@typescript-eslint': typescript,
       react: react,
-      prettier: prettier
+      prettier: prettier,
     },
     settings: {
       react: {
         pragma: 'React',
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
     rules: {
       ...prettierConfig.rules,
       'prettier/prettier': [
         'error',
         {
-          singleQuote: true
-        }
+          singleQuote: true,
+        },
       ],
       'react/prop-types': 'off',
       'react/display-name': 'off',
@@ -46,7 +47,7 @@ export default [
       '@typescript-eslint/naming-convention': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off'
-    }
-  }
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+    },
+  },
 ]
