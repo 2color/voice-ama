@@ -3,7 +3,7 @@ import { Textarea } from '~/components/Input'
 import Button, { DeleteButton } from '../Button'
 import AudioRecorder from '../AudioRecorder'
 import toast from 'react-hot-toast'
-import { AmaQuestion } from '~/types/Ama'
+import { AmaQuestion, UpdateAmaQuestion } from '~/types/Ama'
 import { deleteAma, updateAMAQuestion } from '~/lib/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -101,18 +101,21 @@ export default function EditQuestion({ question, onDone }: Props) {
     },
   })
 
-  const updateQuestion = useMutation<AmaQuestion>({
-    mutationFn: () => {
+  const updateQuestion = useMutation({
+    mutationFn: (updatedState: typeof initialState) => {
+      const audioUrl = updatedState.src
+      const audioWaveform = updatedState.waveform
+
       // Status is ANSWERED if there's a text answer or audio url
       const status =
-        state.answer.length > 0 || state.src ? 'ANSWERED' : 'UNANSWERED'
+        updatedState.answer.length > 0 || audioUrl ? 'ANSWERED' : 'UNANSWERED'
 
       return updateAMAQuestion(question.id, {
-        answer: state.answer,
+        answer: updatedState.answer,
         status: status,
         question: state.question,
-        audioUrl: state.src,
-        audioWaveform: state.waveform,
+        audioUrl,
+        audioWaveform,
       })
     },
     onSuccess: async () => {
@@ -131,7 +134,7 @@ export default function EditQuestion({ question, onDone }: Props) {
 
   function handleSave(e) {
     e.preventDefault()
-    updateQuestion.mutate()
+    updateQuestion.mutate(state)
   }
 
   function onQuestionChange(e) {
@@ -144,7 +147,7 @@ export default function EditQuestion({ question, onDone }: Props) {
 
   function onKeyDown(e) {
     if (e.keyCode === 13 && e.metaKey) {
-      updateQuestion.mutate()
+      updateQuestion.mutate(state)
     }
   }
 
@@ -157,7 +160,12 @@ export default function EditQuestion({ question, onDone }: Props) {
   async function onUploadCompleteComplete({ waveform, src }) {
     dispatch({ type: 'add-waveform', value: { waveform, src } })
     dispatch({ type: 'is-recording', value: false })
-    updateQuestion.mutate()
+
+    updateQuestion.mutate({
+      ...state,
+      src,
+      waveform,
+    })
   }
 
   function onRecordingStart() {
@@ -172,6 +180,12 @@ export default function EditQuestion({ question, onDone }: Props) {
 
   function onDeleteAudio() {
     dispatch({ type: 'remove-audio' })
+
+    updateQuestion.mutate({
+      ...state,
+      src: null,
+      waveform: null,
+    })
   }
 
   return (
