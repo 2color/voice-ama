@@ -3,7 +3,7 @@ import { Textarea } from '~/components/Input'
 import Button, { DeleteButton } from '../Button'
 import AudioRecorder from '../AudioRecorder'
 import toast from 'react-hot-toast'
-import { AmaQuestion, UpdateAmaQuestion } from '~/types/Ama'
+import { AmaQuestion } from '~/types/Ama'
 import { deleteAma, updateAMAQuestion } from '~/lib/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
