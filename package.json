@@ -35,7 +35,7 @@
     "react-hot-toast": "2.6.0",
     "react-linkify": "1.0.0-alpha",
     "react-markdown": "10.1.0",
-    "string-replace-to-array": "2.1.0",
+    "string-replace-to-array": "2.1.1",
     "timeago.js": "4.0.2"
   },
   "devDependencies": {
